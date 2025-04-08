@@ -9,13 +9,14 @@ namespace SupermarketStoreApi.Models
 
         [Required]
         [StringLength(50)]
-        public string NomeProdotto { get; set; }
-        [Required]
+        public required string NomeProdotto { get; set; }
 
+        [Required]
+        public required string ImmagineProdotto { get; set; }
 
         [Required]
         [StringLength(1000)]
-        public string DescrizioneProdotto { get; set; }
+        public required string DescrizioneProdotto { get; set; }
 
         [Required]
         public decimal PrezzoProdotto { get; set; }
