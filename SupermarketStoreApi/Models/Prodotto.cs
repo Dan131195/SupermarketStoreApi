@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SupermarketStoreApi.Models
 {
@@ -22,6 +23,15 @@ namespace SupermarketStoreApi.Models
         public decimal PrezzoProdotto { get; set; }
 
         [Required]
-        public int Stock {  get; set; }
+        public int Stock { get; set; }
+
+        public int CategoriaId { get; set; }
+
+        [ForeignKey("CategoriaId")]
+        public Categoria Categoria { get; set; }
+
+        public ICollection<ProdottoCarrello>? ProdottiCarrello { get; set; }
+
+        public ICollection<ProdottoOrdine>? ProdottiOrdine { get; set; }
     }
 }
