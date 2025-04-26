@@ -8,8 +8,9 @@ namespace SupermarketStoreApi.Models
         public int StatoOrdineId { get; set; }
 
         [Required]
-        public string NomeStato { get; set; } 
+        public string Nome { get; set; }
 
         public ICollection<Ordine> Ordini { get; set; }
     }
+
 }

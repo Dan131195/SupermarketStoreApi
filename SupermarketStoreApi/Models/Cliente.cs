@@ -10,8 +10,7 @@ namespace SupermarketStoreApi.Models
         public Guid ClienteId { get; set; }
 
         [Required]
-        [MaxLength(16)]
-        [MinLength(16)]
+        [StringLength(16, MinimumLength = 16)]
         public required string CodiceFiscale { get; set; }
 
         [Required]

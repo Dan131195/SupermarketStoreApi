@@ -7,7 +7,7 @@ namespace SupermarketStoreApi.DTOs.Prodotto
         [StringLength(50)]
         public string? NomeProdotto { get; set; }
 
-        public string? ImmagineProdotto { get; set; }
+        public IFormFile? ImmagineFile { get; set; }
 
         [StringLength(1000)]
         public string? DescrizioneProdotto { get; set; }
@@ -16,7 +16,7 @@ namespace SupermarketStoreApi.DTOs.Prodotto
 
         public int Stock { get; set; }
 
-        public int CategoriaId { get; set; }
+        public string? NomeCategoria { get; set; }
     }
 
 }

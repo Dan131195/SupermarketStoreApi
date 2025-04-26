@@ -21,11 +21,15 @@ namespace SupermarketStoreApi.Models
         [Required]
         public DateTime? OraRitiro { get; set; }
 
-        public ICollection<ProdottoOrdine> ProdottoOrdini { get; set; }
+        public ICollection<ProdottoOrdine> ProdottiOrdine { get; set; }
 
         [Required]
         public int StatoOrdineId { get; set; }
+
         [ForeignKey("StatoOrdineId")]
-        public StatoOrdine StatoOrdini { get; set; }
+        public StatoOrdine StatoOrdine { get; set; }
+
+        public DateTime DataOrdine { get; set; } = DateTime.UtcNow;
     }
+
 }

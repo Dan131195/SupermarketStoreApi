@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +7,8 @@ using Serilog;
 using SupermarketStoreApi.Data;
 using SupermarketStoreApi.Models.Auth;
 using SupermarketStoreApi.Settings;
+using SupermarketStoreApi.Services;
+using SupermarketStoreApi.Seeders;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
@@ -22,9 +24,7 @@ try
     var builder = WebApplication.CreateBuilder(args);
 
     // Add services to the container.
-
     builder.Services.AddControllers();
-    // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
 
@@ -67,34 +67,40 @@ try
             options.TokenValidationParameters = new TokenValidationParameters()
             {
                 ValidateIssuer = true,
-
                 ValidateAudience = true,
-
-                ValidateLifetime = true,
-
                 ValidateIssuerSigningKey = true,
-
                 ValidIssuer = builder.Configuration.GetSection(nameof(Jwt)).GetValue<string>("Issuer"),
-
                 ValidAudience = builder.Configuration.GetSection(nameof(Jwt)).GetValue<string>("Audience"),
-
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection(nameof(Jwt)).GetValue<string>("SecurityKey")))
+                IssuerSigningKey = new SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(builder.Configuration.GetSection(nameof(Jwt)).GetValue<string>("SecurityKey"))
+                )
             };
         });
 
-    builder.Services.AddScoped<UserManager<ApplicationUser>>();
-    builder.Services.AddScoped<SignInManager<ApplicationUser>>();
-    builder.Services.AddScoped<RoleManager<ApplicationRole>>();
+    builder.Services.AddScoped<ProdottoService>();
+    builder.Services.AddScoped<CategoriaService>();
+    builder.Services.AddScoped<ClienteService>();
+    builder.Services.AddScoped<CarrelloService>();
+    builder.Services.AddScoped<OrdineService>();
+
+    builder.Host.UseSerilog();
 
     var app = builder.Build();
 
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+        var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+        var roleManager = services.GetRequiredService<RoleManager<ApplicationRole>>();
+        await SuperAdminSeeder.SeedAsync(userManager, roleManager);
+    }
+
     app.UseCors(x =>
-           x.AllowAnyOrigin()
-           .AllowAnyMethod()
-           .AllowAnyHeader()
+       x.AllowAnyOrigin()
+       .AllowAnyMethod()
+       .AllowAnyHeader()
     );
 
-    // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())
     {
         app.UseSwagger();
@@ -102,7 +108,10 @@ try
     }
 
     app.UseHttpsRedirection();
+    app.UseStaticFiles();
+    app.UseRouting();
 
+    app.UseAuthentication();
     app.UseAuthorization();
 
     app.MapControllers();
@@ -111,10 +120,9 @@ try
 }
 catch (Exception ex)
 {
-    Log.Error(ex.Message);
+    Log.Error(ex, "Errore fatale all'avvio");
 }
 finally
 {
     await Log.CloseAndFlushAsync();
 }
-

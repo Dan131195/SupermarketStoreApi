@@ -12,7 +12,7 @@ using SupermarketStoreApi.Data;
 namespace SupermarketStoreApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250408162413_Initial")]
+    [Migration("20250410134214_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -159,7 +159,7 @@ namespace SupermarketStoreApi.Migrations
                         {
                             Id = "3",
                             Name = "Seller",
-                            NormalizedName = "Seller"
+                            NormalizedName = "SELLER"
                         },
                         new
                         {
@@ -304,6 +304,9 @@ namespace SupermarketStoreApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("DataOrdine")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime?>("OraRitiro")
                         .IsRequired()
                         .HasColumnType("datetime2");
@@ -401,14 +404,14 @@ namespace SupermarketStoreApi.Migrations
                     b.Property<Guid>("OrdineId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal>("Prezzo")
+                    b.Property<decimal>("PrezzoUnitario")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid>("ProdottoId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("Quantità")
+                    b.Property<int>("Quantita")
                         .HasColumnType("int");
 
                     b.HasKey("ProdottoOrdineId");
@@ -428,7 +431,7 @@ namespace SupermarketStoreApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StatoOrdineId"));
 
-                    b.Property<string>("NomeStato")
+                    b.Property<string>("Nome")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -440,22 +443,22 @@ namespace SupermarketStoreApi.Migrations
                         new
                         {
                             StatoOrdineId = 1,
-                            NomeStato = "In Preparazione"
+                            Nome = "In Preparazione"
                         },
                         new
                         {
                             StatoOrdineId = 2,
-                            NomeStato = "Pronto"
+                            Nome = "Pronto"
                         },
                         new
                         {
                             StatoOrdineId = 3,
-                            NomeStato = "Ritirato"
+                            Nome = "Ritirato"
                         },
                         new
                         {
                             StatoOrdineId = 4,
-                            NomeStato = "Annullato"
+                            Nome = "Annullato"
                         });
                 });
 
@@ -527,7 +530,7 @@ namespace SupermarketStoreApi.Migrations
 
             modelBuilder.Entity("SupermarketStoreApi.Models.Ordine", b =>
                 {
-                    b.HasOne("SupermarketStoreApi.Models.StatoOrdine", "StatoOrdini")
+                    b.HasOne("SupermarketStoreApi.Models.StatoOrdine", "StatoOrdine")
                         .WithMany("Ordini")
                         .HasForeignKey("StatoOrdineId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -539,7 +542,7 @@ namespace SupermarketStoreApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("StatoOrdini");
+                    b.Navigation("StatoOrdine");
 
                     b.Navigation("User");
                 });
@@ -577,7 +580,7 @@ namespace SupermarketStoreApi.Migrations
             modelBuilder.Entity("SupermarketStoreApi.Models.ProdottoOrdine", b =>
                 {
                     b.HasOne("SupermarketStoreApi.Models.Ordine", "Ordine")
-                        .WithMany("ProdottoOrdini")
+                        .WithMany("ProdottiOrdine")
                         .HasForeignKey("OrdineId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -616,7 +619,7 @@ namespace SupermarketStoreApi.Migrations
 
             modelBuilder.Entity("SupermarketStoreApi.Models.Ordine", b =>
                 {
-                    b.Navigation("ProdottoOrdini");
+                    b.Navigation("ProdottiOrdine");
                 });
 
             modelBuilder.Entity("SupermarketStoreApi.Models.Prodotto", b =>

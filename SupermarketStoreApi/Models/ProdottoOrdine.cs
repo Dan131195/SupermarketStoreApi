@@ -16,8 +16,8 @@ namespace SupermarketStoreApi.Models
         [ForeignKey("ProdottoId")]
         public Prodotto Prodotto { get; set; }
 
-        public int Quantità { get; set; }
+        public int Quantita { get; set; }
 
-        public decimal Prezzo { get; set; }
+        public decimal PrezzoUnitario { get; set; }
     }
 }

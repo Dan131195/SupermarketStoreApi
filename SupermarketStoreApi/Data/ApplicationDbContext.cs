@@ -58,13 +58,13 @@ namespace SupermarketStoreApi.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Ordine>()
-                .HasMany(o => o.ProdottoOrdini)
+                .HasMany(o => o.ProdottiOrdine)
                 .WithOne(oi => oi.Ordine)
                 .HasForeignKey(oi => oi.OrdineId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Ordine>()
-                .HasOne(o => o.StatoOrdini)
+                .HasOne(o => o.StatoOrdine)
                 .WithMany(os => os.Ordini)
                 .HasForeignKey(o => o.StatoOrdineId)
                 .OnDelete(DeleteBehavior.Restrict);
@@ -85,7 +85,7 @@ namespace SupermarketStoreApi.Data
                 .HasPrecision(18, 2);
 
             builder.Entity<ProdottoOrdine>()
-                .Property(po => po.Prezzo)
+                .Property(po => po.PrezzoUnitario)
                 .HasPrecision(18, 2);
 
 
@@ -106,16 +106,16 @@ namespace SupermarketStoreApi.Data
             });
 
             builder.Entity<StatoOrdine>().HasData(
-                new StatoOrdine { StatoOrdineId = 1, NomeStato = "In Preparazione" },
-                new StatoOrdine { StatoOrdineId = 2, NomeStato = "Pronto" },
-                new StatoOrdine { StatoOrdineId = 3, NomeStato = "Ritirato" },
-                new StatoOrdine { StatoOrdineId = 4, NomeStato = "Annullato" }
+                new StatoOrdine { StatoOrdineId = 1, Nome = "In Preparazione" },
+                new StatoOrdine { StatoOrdineId = 2, Nome = "Pronto" },
+                new StatoOrdine { StatoOrdineId = 3, Nome = "Ritirato" },
+                new StatoOrdine { StatoOrdineId = 4, Nome = "Annullato" }
             );
 
             builder.Entity<ApplicationRole>().HasData(
                 new ApplicationRole { Id = "1", Name = "SuperAdmin", NormalizedName = "SUPERADMIN" },
                 new ApplicationRole { Id = "2", Name = "Admin", NormalizedName = "ADMIN" },
-                new ApplicationRole { Id = "3", Name = "Seller", NormalizedName = "Seller" },
+                new ApplicationRole { Id = "3", Name = "Seller", NormalizedName = "SELLER" },
                 new ApplicationRole { Id = "4", Name = "User", NormalizedName = "USER" }
             );
         }

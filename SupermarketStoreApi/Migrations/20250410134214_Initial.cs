@@ -73,7 +73,7 @@ namespace SupermarketStoreApi.Migrations
                 {
                     StatoOrdineId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    NomeStato = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Nome = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -236,7 +236,8 @@ namespace SupermarketStoreApi.Migrations
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Totale = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     OraRitiro = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    StatoOrdineId = table.Column<int>(type: "int", nullable: false)
+                    StatoOrdineId = table.Column<int>(type: "int", nullable: false),
+                    DataOrdine = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -289,8 +290,8 @@ namespace SupermarketStoreApi.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OrdineId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProdottoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Quantità = table.Column<int>(type: "int", nullable: false),
-                    Prezzo = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false)
+                    Quantita = table.Column<int>(type: "int", nullable: false),
+                    PrezzoUnitario = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -316,13 +317,13 @@ namespace SupermarketStoreApi.Migrations
                 {
                     { "1", null, "SuperAdmin", "SUPERADMIN" },
                     { "2", null, "Admin", "ADMIN" },
-                    { "3", null, "Seller", "Seller" },
+                    { "3", null, "Seller", "SELLER" },
                     { "4", null, "User", "USER" }
                 });
 
             migrationBuilder.InsertData(
                 table: "StatiOrdine",
-                columns: new[] { "StatoOrdineId", "NomeStato" },
+                columns: new[] { "StatoOrdineId", "Nome" },
                 values: new object[,]
                 {
                     { 1, "In Preparazione" },
