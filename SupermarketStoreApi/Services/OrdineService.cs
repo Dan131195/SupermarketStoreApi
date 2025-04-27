@@ -16,7 +16,7 @@ namespace SupermarketStoreApi.Services
             _logger = logger;
         }
 
-        public async Task<bool> ConfermaOrdineAsync(string userId)
+        public async Task<bool> ConfermaOrdineAsync(string userId, DateTime oraRitiro)
         {
             var carrello = await _context.ProdottiCarrello
                 .Include(pc => pc.Prodotto)
@@ -25,13 +25,19 @@ namespace SupermarketStoreApi.Services
 
             if (!carrello.Any()) return false;
 
+            var now = DateTime.UtcNow;
+            if (oraRitiro < now.AddHours(1))
+            {
+                return false;
+            }
+
             var ordine = new Ordine
             {
                 OrdineId = Guid.NewGuid(),
                 UserId = userId,
-                DataOrdine = DateTime.UtcNow,
-                OraRitiro = DateTime.UtcNow,
-                StatoOrdineId = 1, 
+                DataOrdine = now,
+                OraRitiro = oraRitiro, 
+                StatoOrdineId = 1,
                 Totale = carrello.Sum(c => c.Quantita * c.Prodotto.PrezzoProdotto),
                 ProdottiOrdine = carrello.Select(c => new ProdottoOrdine
                 {

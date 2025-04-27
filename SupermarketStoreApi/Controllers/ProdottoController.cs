@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SupermarketStoreApi.DTOs.Prodotto;
 using SupermarketStoreApi.Services;
 
@@ -6,6 +7,7 @@ namespace SupermarketStoreApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class ProdottoController : ControllerBase
     {
         private readonly ProdottoService _service;
@@ -20,6 +22,7 @@ namespace SupermarketStoreApi.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAll()
         {
             try
@@ -35,6 +38,7 @@ namespace SupermarketStoreApi.Controllers
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetById(Guid id)
         {
             try

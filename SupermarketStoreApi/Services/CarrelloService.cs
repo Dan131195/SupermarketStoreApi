@@ -2,6 +2,7 @@
 using SupermarketStoreApi.Data;
 using SupermarketStoreApi.Models;
 using SupermarketStoreApi.DTOs.Carrello;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SupermarketStoreApi.Services
 {
@@ -16,6 +17,7 @@ namespace SupermarketStoreApi.Services
             _logger = logger;
         }
 
+        
         public async Task<List<CarrelloItemDto>> GetByUserIdAsync(string userId)
         {
             return await _context.ProdottiCarrello

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SupermarketStoreApi.Services;
 using SupermarketStoreApi.DTOs.Ordine;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace SupermarketStoreApi.Controllers
 {
@@ -19,10 +20,14 @@ namespace SupermarketStoreApi.Controllers
         }
 
         [HttpPost("conferma")]
-        public async Task<IActionResult> Conferma([FromBody] ConfermaOrdineRequest richiesta)
+        public async Task<IActionResult> ConfermaOrdine([FromBody] ConfermaOrdineRequest request)
         {
-            var result = await _service.ConfermaOrdineAsync(richiesta.UserId);
-            return result ? Ok() : BadRequest("Carrello vuoto o errore interno");
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null) return Unauthorized();
+
+            var success = await _service.ConfermaOrdineAsync(userId, request.OraRitiro);
+            if (!success) return BadRequest();
+            return Ok();
         }
 
         [HttpGet("storico/{userId}")]

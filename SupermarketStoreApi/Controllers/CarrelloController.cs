@@ -2,11 +2,14 @@
 using Microsoft.AspNetCore.Mvc;
 using SupermarketStoreApi.Services;
 using SupermarketStoreApi.DTOs.Carrello;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace SupermarketStoreApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class CarrelloController : ControllerBase
     {
         private readonly CarrelloService _service;
@@ -17,6 +20,7 @@ namespace SupermarketStoreApi.Controllers
         }
 
         [HttpGet("{userId}")]
+        [Authorize]
         public async Task<IActionResult> GetByUser(string userId)
         {
             var carrello = await _service.GetByUserIdAsync(userId);
@@ -26,6 +30,11 @@ namespace SupermarketStoreApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Aggiungi([FromBody] AggiungiAlCarrelloDto dto)
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null) return Unauthorized();
+
+            dto.UserId = userId; 
+
             var result = await _service.AggiungiAsync(dto);
             return result ? Ok() : BadRequest();
         }

@@ -17,7 +17,7 @@ namespace SupermarketStoreApi.Seeders
                 }
             }
 
-            var superAdminEmail = "superadmin@email.com";
+            var superAdminEmail = "admin@email.com";
             var existingUser = await userManager.FindByEmailAsync(superAdminEmail);
 
             if (existingUser == null)
@@ -30,7 +30,7 @@ namespace SupermarketStoreApi.Seeders
                     LastName = "Admin"
                 };
 
-                var result = await userManager.CreateAsync(user, "SuperAdmin123!");
+                var result = await userManager.CreateAsync(user, "Admin123!");
 
                 if (result.Succeeded)
                 {

@@ -24,6 +24,6 @@ namespace SupermarketStoreApi.DTOs.Account
 
         [Required]
         [RegularExpression("User|Seller", ErrorMessage = "Ruolo non valido. Ammessi: User, Seller")]
-        public string Ruolo { get; set; } // 👈 Aggiunto
+        public string Ruolo { get; set; } 
     }
 }

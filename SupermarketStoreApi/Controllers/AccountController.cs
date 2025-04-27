@@ -136,7 +136,7 @@ namespace SupermarketStoreApi.Controllers
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecurityKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var expiry = DateTime.Now.AddMinutes(_jwtSettings.ExpiresInMinutes);
+            var expiry = DateTime.UtcNow.AddMinutes(_jwtSettings.ExpiresInMinutes);
             var token = new JwtSecurityToken(_jwtSettings.Issuer, _jwtSettings.Audience, claims, expires: expiry, signingCredentials: creds);
 
             string tokenString = new JwtSecurityTokenHandler().WriteToken(token);

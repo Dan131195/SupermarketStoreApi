@@ -2,6 +2,7 @@
 {
     public class ConfermaOrdineRequest
     {
-        public string UserId { get; set; }
+        
+        public DateTime OraRitiro { get; set; }
     }
 }
