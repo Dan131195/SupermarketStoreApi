@@ -17,7 +17,7 @@ namespace SupermarketStoreApi.Seeders
                 }
             }
 
-            var superAdminEmail = "admin@email.com";
+            var superAdminEmail = "speedmarket@email.com";
             var existingUser = await userManager.FindByEmailAsync(superAdminEmail);
 
             if (existingUser == null)

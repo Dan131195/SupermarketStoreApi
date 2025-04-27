@@ -71,7 +71,8 @@ namespace SupermarketStoreApi.Services
                     {
                         NomeProdotto = po.Prodotto.NomeProdotto,
                         Quantita = po.Quantita,
-                        PrezzoUnitario = po.PrezzoUnitario
+                        PrezzoUnitario = po.PrezzoUnitario,
+                        ImmagineProdotto = po.Prodotto.ImmagineProdotto
                     }).ToList()
                 })
                 .ToListAsync();
