@@ -54,6 +54,7 @@ namespace SupermarketStoreApi.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Create([FromForm] ProdottoCreateDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -89,6 +90,8 @@ namespace SupermarketStoreApi.Controllers
         }
 
         [HttpDelete("{id}")]
+        [AllowAnonymous]
+
         public async Task<IActionResult> Delete(Guid id)
         {
             try

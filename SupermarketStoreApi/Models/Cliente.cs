@@ -12,6 +12,9 @@ namespace SupermarketStoreApi.Models
         [Required]
         [StringLength(16, MinimumLength = 16)]
         public required string CodiceFiscale { get; set; }
+        public string? Domicilio { get; set; }
+
+        public string? ImmagineProfilo { get; set; }
 
         [Required]
         public string UserId { get; set; }

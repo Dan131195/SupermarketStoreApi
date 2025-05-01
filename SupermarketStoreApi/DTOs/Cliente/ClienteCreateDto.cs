@@ -7,6 +7,6 @@ namespace SupermarketStoreApi.DTOs.Cliente
         [StringLength(16, MinimumLength = 16)]
         public required string CodiceFiscale { get; set; }
 
-        public required string UserId { get; set; } // Deve essere un utente Identity già esistente
+        public required string UserId { get; set; } 
     }
 }

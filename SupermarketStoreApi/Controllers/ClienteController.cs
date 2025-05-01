@@ -7,11 +7,13 @@ using SupermarketStoreApi.Models.Auth;
 using SupermarketStoreApi.Models;
 using Microsoft.EntityFrameworkCore;
 using SupermarketStoreApi.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SupermarketStoreApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class ClienteController : ControllerBase
     {
         private readonly ClienteService _clienteService;
@@ -32,7 +34,7 @@ namespace SupermarketStoreApi.Controllers
                 if (result == null)
                     return BadRequest(new { Message = "Utente non trovato o cliente già esistente." });
 
-                return CreatedAtAction(nameof(GetById), new { id = result.ClienteId }, result);
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -41,13 +43,17 @@ namespace SupermarketStoreApi.Controllers
             }
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(Guid id)
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetById(string userId)
         {
             try
             {
-                var cliente = await _clienteService.GetByIdAsync(id);
-                return cliente != null ? Ok(cliente) : NotFound();
+                var clienteDto = await _clienteService.GetByIdAsync(userId);
+                if (clienteDto == null)
+                    return NotFound();
+
+                _logger.LogInformation(clienteDto.ToString());
+                return Ok(clienteDto);
             }
             catch (Exception ex)
             {
@@ -71,19 +77,37 @@ namespace SupermarketStoreApi.Controllers
             }
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id}/modifica")]
         public async Task<IActionResult> Update(Guid id, [FromBody] ClienteUpdateDto dto)
         {
-            try
-            {
-                var updated = await _clienteService.UpdateAsync(id, dto);
-                return updated ? NoContent() : NotFound();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Errore durante l'aggiornamento del cliente");
-                return StatusCode(500, "Errore interno");
-            }
+            var result = await _clienteService.UpdateAsync(id, dto);
+            if (!result) return NotFound();
+            return NoContent();
+        }
+
+        [HttpPatch("{id}/modifica/immagine")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> UpdateImmagine(Guid id, [FromForm] UpdateImmagineDto dto)
+        {
+            var result = await _clienteService.UpdateImmagineProfiloAsync(id, dto.ImmagineFile);
+            if (!result) return NotFound();
+            return NoContent();
+        }
+
+        [HttpPatch("{id}/modifica/indirizzo")]
+        public async Task<IActionResult> UpdateIndirizzo(Guid id, [FromBody] string nuovoIndirizzo)
+        {
+            var result = await _clienteService.UpdateIndirizzoAsync(id, nuovoIndirizzo);
+            if (!result) return NotFound();
+            return NoContent();
+        }
+
+        [HttpPatch("{id}/modifica/email")]
+        public async Task<IActionResult> UpdateEmail(Guid id, [FromBody] string nuovaEmail)
+        {
+            var result = await _clienteService.UpdateEmailAsync(id, nuovaEmail);
+            if (!result) return NotFound();
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
