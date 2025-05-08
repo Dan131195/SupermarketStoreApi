@@ -135,12 +135,14 @@ namespace SupermarketStoreApi.Services
                 }
 
                 var categoria = await _context.Categorie
-                    .FirstOrDefaultAsync(c => c.NomeCategoria.ToLower() == dto.NomeCategoria.ToLower());
+                    .FirstOrDefaultAsync(c => c.NomeCategoria == dto.NomeCategoria);
+                Console.WriteLine(categoria);
 
                 if (categoria == null)
                 {
                     categoria = new Categoria { NomeCategoria = dto.NomeCategoria };
                     _context.Categorie.Add(categoria);
+                    Console.WriteLine(categoria);
                     await _context.SaveChangesAsync();
                 }
 
@@ -165,7 +167,6 @@ namespace SupermarketStoreApi.Services
                 prodotto.PrezzoProdotto = dto.PrezzoProdotto;
                 prodotto.Stock = dto.Stock;
                 prodotto.CategoriaId = categoria.CategoriaId;
-
                 await _context.SaveChangesAsync();
 
                 _logger.LogInformation($"Prodotto con ID {id} aggiornato");

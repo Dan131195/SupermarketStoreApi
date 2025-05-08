@@ -1,11 +1,5 @@
-﻿
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using SupermarketStoreApi.Data;
+﻿using Microsoft.AspNetCore.Mvc;
 using SupermarketStoreApi.DTOs.Cliente;
-using SupermarketStoreApi.Models.Auth;
-using SupermarketStoreApi.Models;
-using Microsoft.EntityFrameworkCore;
 using SupermarketStoreApi.Services;
 using Microsoft.AspNetCore.Authorization;
 
@@ -78,37 +72,14 @@ namespace SupermarketStoreApi.Controllers
         }
 
         [HttpPut("{id}/modifica")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] ClienteUpdateDto dto)
+        public async Task<IActionResult> Update(Guid id, [FromForm] ClienteUpdateDto dto)
         {
             var result = await _clienteService.UpdateAsync(id, dto);
             if (!result) return NotFound();
             return NoContent();
         }
 
-        [HttpPatch("{id}/modifica/immagine")]
-        [Consumes("multipart/form-data")]
-        public async Task<IActionResult> UpdateImmagine(Guid id, [FromForm] UpdateImmagineDto dto)
-        {
-            var result = await _clienteService.UpdateImmagineProfiloAsync(id, dto.ImmagineFile);
-            if (!result) return NotFound();
-            return NoContent();
-        }
-
-        [HttpPatch("{id}/modifica/indirizzo")]
-        public async Task<IActionResult> UpdateIndirizzo(Guid id, [FromBody] string nuovoIndirizzo)
-        {
-            var result = await _clienteService.UpdateIndirizzoAsync(id, nuovoIndirizzo);
-            if (!result) return NotFound();
-            return NoContent();
-        }
-
-        [HttpPatch("{id}/modifica/email")]
-        public async Task<IActionResult> UpdateEmail(Guid id, [FromBody] string nuovaEmail)
-        {
-            var result = await _clienteService.UpdateEmailAsync(id, nuovaEmail);
-            if (!result) return NotFound();
-            return NoContent();
-        }
+        
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)

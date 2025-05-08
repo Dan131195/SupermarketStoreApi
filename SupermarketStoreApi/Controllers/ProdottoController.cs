@@ -73,7 +73,7 @@ namespace SupermarketStoreApi.Controllers
 
         [HttpPut("{id}")]
 //      [RequestSizeLimit(10_000_000)]
-        public async Task<IActionResult> Update(Guid id, [FromForm] ProdottoUpdateDto dto)
+        public async Task<IActionResult> Update(Guid id, [FromBody] ProdottoUpdateDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 

@@ -37,6 +37,14 @@ namespace SupermarketStoreApi.Controllers
             return Ok(ordini);
         }
 
+        [HttpGet("storico")]
+        [Authorize(Roles = "Admin, SuperAdmin")]
+        public async Task<IActionResult> StoricoTutti()
+        {
+            var ordini = await _service.GetAllAsync();
+            return Ok(ordini);
+        }
+
         [HttpGet("dettagli/{ordineId}")]
         public async Task<IActionResult> Dettagli(Guid ordineId)
         {

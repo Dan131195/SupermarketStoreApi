@@ -9,6 +9,7 @@ using SupermarketStoreApi.Models.Auth;
 using SupermarketStoreApi.Settings;
 using SupermarketStoreApi.Services;
 using SupermarketStoreApi.Seeders;
+using SupermarketStoreApi.Models;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
@@ -82,6 +83,9 @@ try
     builder.Services.AddScoped<ClienteService>();
     builder.Services.AddScoped<CarrelloService>();
     builder.Services.AddScoped<OrdineService>();
+
+    builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
+    builder.Services.AddSingleton<EmailService>();
 
     builder.Host.UseSerilog();
 

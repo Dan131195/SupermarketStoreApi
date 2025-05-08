@@ -11,6 +11,7 @@ using SupermarketStoreApi.Settings;
 using SupermarketStoreApi.DTOs.Account;
 using SupermarketStoreApi.Data;
 using SupermarketStoreApi.Models;
+using SupermarketStoreApi.Services;
 
 namespace SupermarketStoreApi.Controllers
 {
@@ -22,13 +23,15 @@ namespace SupermarketStoreApi.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
+        private readonly EmailService _emailService;
 
-        public AccountController(IOptions<Jwt> jwtOptions, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<ApplicationRole> roleManager)
+        public AccountController(IOptions<Jwt> jwtOptions, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<ApplicationRole> roleManager, EmailService emailService)
         {
             _jwtSettings = jwtOptions.Value;
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
+            _emailService = emailService;
         }
 
         [HttpPost("Register")]
@@ -83,6 +86,18 @@ namespace SupermarketStoreApi.Controllers
 
                     clienteId = cliente.ClienteId;
                 }
+                await _emailService.SendEmailAsync(
+                    newUser.Email,
+                    "Benvenuto su SpeedMarket!",
+                    $@"
+                    <div style='font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;'>
+                        <h2 style='color: #2e7d32;'>Ciao {newUser.FirstName},</h2>
+                        <p>Grazie per esserti registrato su <strong>SpeedMarket</strong>! 🎉</p>
+                        <p>Ora puoi ordinare comodamente online e ricevere aggiornamenti sul tuo ordine in tempo reale.</p>
+                        <hr style='border: none; border-top: 1px solid #ccc;' />
+                        <p style='font-size: 14px; color: #555;'>Buono shopping,<br/>Il team di SpeedMarket</p>
+                    </div>"
+                );
 
                 return Ok(new RegisterResponseDto
                 {
@@ -152,8 +167,8 @@ namespace SupermarketStoreApi.Controllers
         }
 
         [Authorize(Roles = "SuperAdmin")]
-        [HttpPost("RegisterAdmin")]
-        public async Task<IActionResult> RegisterAdmin([FromBody] RegisterRequestDto registerRequestDto)
+        [HttpPost("Register/Admin")]
+        public async Task<IActionResult> RegisterAdmin([FromBody] RegisterAdminRequestDto registerRequestDto)
         {
             try
             {

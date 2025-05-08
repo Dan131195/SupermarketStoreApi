@@ -1,14 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Http;
 using SupermarketStoreApi.Data;
 using SupermarketStoreApi.DTOs.Cliente;
 using SupermarketStoreApi.Models.Auth;
-using SupermarketStoreApi.Models;
 using Microsoft.EntityFrameworkCore;
-using SupermarketStoreApi.Migrations;
 using Cliente = SupermarketStoreApi.Models.Cliente;
-using Microsoft.AspNetCore.Mvc;
-
 namespace SupermarketStoreApi.Services
 {
     public class ClienteService
@@ -94,7 +89,8 @@ namespace SupermarketStoreApi.Services
                 Email = cliente.User.Email,
                 Nome = cliente.User.FirstName,
                 Cognome = cliente.User.LastName,
-                ImmagineProfilo = cliente.ImmagineProfilo
+                ImmagineProfilo = cliente.ImmagineProfilo,
+                Indirizzo = cliente.Domicilio
             };
         }
 
@@ -116,7 +112,7 @@ namespace SupermarketStoreApi.Services
                 .ToListAsync();
         }
 
-        
+
         public async Task<bool> UpdateAsync(Guid id, ClienteUpdateDto dto)
         {
             var cliente = await _context.Clienti.Include(c => c.User).FirstOrDefaultAsync(c => c.ClienteId == id);
@@ -124,6 +120,12 @@ namespace SupermarketStoreApi.Services
 
             cliente.CodiceFiscale = dto.CodiceFiscale;
             cliente.Domicilio = dto.Indirizzo;
+
+            if (dto.ImmagineFile != null)
+            {
+                var imagePath = await SaveImageAsync(dto.ImmagineFile);
+                cliente.ImmagineProfilo = imagePath;
+            }
 
             cliente.User.FirstName = dto.Nome;
             cliente.User.LastName = dto.Cognome;
@@ -135,45 +137,8 @@ namespace SupermarketStoreApi.Services
             return true;
         }
 
-        
-        public async Task<bool> UpdateImmagineProfiloAsync(Guid id, IFormFile immagineFile)
-        {
-            var cliente = await _context.Clienti.FindAsync(id);
-            if (cliente == null) return false;
 
-            var imagePath = await SaveImageAsync(immagineFile);
-            cliente.ImmagineProfilo = imagePath;
 
-            await _context.SaveChangesAsync();
-            return true;
-        }
-
-        // PATCH - Aggiorna solo l'indirizzo
-        public async Task<bool> UpdateIndirizzoAsync(Guid id, string nuovoIndirizzo)
-        {
-            var cliente = await _context.Clienti.FindAsync(id);
-            if (cliente == null) return false;
-
-            cliente.Domicilio = nuovoIndirizzo;
-            await _context.SaveChangesAsync();
-            return true;
-        }
-
-        // PATCH - Aggiorna solo l'email (anche su Identity)
-        public async Task<bool> UpdateEmailAsync(Guid id, string nuovaEmail)
-        {
-            var cliente = await _context.Clienti.Include(c => c.User).FirstOrDefaultAsync(c => c.ClienteId == id);
-            if (cliente == null) return false;
-
-            cliente.User.Email = nuovaEmail;
-            cliente.User.UserName = nuovaEmail;
-
-            var result = await _userManager.UpdateAsync(cliente.User);
-            if (!result.Succeeded) return false;
-
-            await _context.SaveChangesAsync();
-            return true;
-        }
 
 
         public async Task<bool> DeleteAsync(Guid id)
